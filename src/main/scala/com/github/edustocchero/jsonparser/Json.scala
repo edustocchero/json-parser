@@ -2,10 +2,13 @@ package com.github.edustocchero.jsonparser
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Try
 
 trait Json {
   def apply(): Any = ()
-  def asJsonObject(): JsonObject = this.asInstanceOf[JsonObject]
+
+  def asJsonObject(): Option[JsonObject] =
+    Try(this.asInstanceOf[JsonObject]).toOption
 }
 
 case class JsonNull() extends Json
@@ -22,8 +25,8 @@ case class JsonBoolean(value: Boolean) extends Json {
   override def apply(): Boolean = value
 }
 
-case class JsonArray(value: Option[ArrayBuffer[Json]]) extends Json {
-  override def apply(): Option[ArrayBuffer[Json]] = value
+case class JsonArray(value: ArrayBuffer[Json]) extends Json {
+  override def apply(): ArrayBuffer[Json] = value
 }
 
 case class JsonPair(value: (String, Json)) extends Json {
