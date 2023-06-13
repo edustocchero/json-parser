@@ -41,6 +41,8 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
 
       val boolean = parser.jsonBoolean()
       val jsonBoolean = new Visitor().visit(boolean)
+
+      assert(jsonBoolean.isInstanceOf[JsonBoolean])
       jsonBoolean() shouldBe true
     }
   }
@@ -53,14 +55,55 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
       val jsonArray = new Visitor().visit(arrayBuffer)
       jsonArray() shouldBe new ArrayBuffer[Json].empty
     }
-    "return Json with value ArrayBuffer[Json...]" in {
+    "return Json with value ArrayBuffer[JsonNumber]" in {
       val parser = parserFromString("[42]")
 
       val arrayBuffer = parser.jsonArray()
       val json = new Visitor().visit(arrayBuffer)
-      json() shouldBe ArrayBuffer[Json] {
+      json() shouldBe ArrayBuffer[Json](
         JsonNumber(BigDecimal("42"))
-      }
+      )
+    }
+    "return Json with value ArrayBuffer[JsonNumber, JsonString]" in {
+      val parser = parserFromString("[42, \"hello\"]")
+
+      val arrayBuffer = parser.jsonArray()
+      val json = new Visitor().visit(arrayBuffer)
+      json() shouldBe ArrayBuffer[Json](
+        JsonNumber(BigDecimal("42")),
+        JsonString("hello")
+      )
+    }
+    "return Json with value [JsonObject{}]" in {
+      val parser = parserFromString("[{}]")
+
+      val arrayBuffer = parser.jsonArray()
+      val json = new Visitor().visit(arrayBuffer)
+      json() shouldBe ArrayBuffer[Json](JsonObject.empty)
+    }
+  }
+
+  "visitor.visit(pair)" should {
+    "return Json with pair x:42" in {
+      val parser = parserFromString("\"x\": 42")
+
+      val jsonPair = parser.jsonPair()
+      val json = new Visitor().visit(jsonPair)
+      json() shouldBe ("x", JsonNumber(BigDecimal("42")))
+    }
+    "return Json with pair foo:[]" in {
+      val parser = parserFromString("\"foo\" : []")
+
+      val jsonPair = parser.jsonPair()
+      val json = new Visitor().visit(jsonPair)
+      json() shouldBe ("foo", JsonArray.empty)
+    }
+    "return Json with pair obj:{}" in {
+      val parser = parserFromString("\"obj\" : {}")
+
+      val jsonPair = parser.jsonPair()
+      val json = new Visitor().visit(jsonPair)
+      json() shouldBe ("obj", JsonObject.empty)
     }
   }
 
