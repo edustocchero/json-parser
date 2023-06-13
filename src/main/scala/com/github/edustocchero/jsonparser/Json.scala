@@ -4,7 +4,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Try
 
-trait Json {
+sealed trait Json {
   def apply(): Any = ()
 
   def asJsonObject(): Option[JsonObject] =
@@ -28,6 +28,9 @@ case class JsonBoolean(value: Boolean) extends Json {
 case class JsonArray(value: ArrayBuffer[Json]) extends Json {
   override def apply(): ArrayBuffer[Json] = value
 }
+object JsonArray {
+  def empty: JsonArray = JsonArray(ArrayBuffer.empty)
+}
 
 case class JsonPair(value: (String, Json)) extends Json {
   override def apply(): (String, Json) = value
@@ -35,4 +38,7 @@ case class JsonPair(value: (String, Json)) extends Json {
 
 case class JsonObject(value: mutable.Map[String, Json]) extends Json {
   override def apply(): mutable.Map[String, Json] = value
+}
+object JsonObject {
+  def empty: JsonObject = JsonObject(mutable.Map.empty)
 }
