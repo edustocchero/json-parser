@@ -48,14 +48,14 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
   }
 
   "visitor.visit(array)" should {
-    "return Json with value ArrayBuffer()" in {
+    "return Json with value ArrayBuffer.empty" in {
       val parser = parserFromString("[]")
 
       val arrayBuffer = parser.jsonArray()
       val jsonArray = new Visitor().visit(arrayBuffer)
       jsonArray() shouldBe new ArrayBuffer[Json].empty
     }
-    "return Json with value ArrayBuffer[JsonNumber]" in {
+    "return Json with value ArrayBuffer(JsonNumber)" in {
       val parser = parserFromString("[42]")
 
       val arrayBuffer = parser.jsonArray()
@@ -64,7 +64,7 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
         JsonNumber(BigDecimal("42"))
       )
     }
-    "return Json with value ArrayBuffer[JsonNumber, JsonString]" in {
+    "return Json with value ArrayBuffer(JsonNumber, JsonString)" in {
       val parser = parserFromString("[42, \"hello\"]")
 
       val arrayBuffer = parser.jsonArray()
@@ -74,7 +74,7 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
         JsonString("hello")
       )
     }
-    "return Json with value [JsonObject{}]" in {
+    "return Json with value ArrayBuffer(JsonObject.empty)" in {
       val parser = parserFromString("[{}]")
 
       val arrayBuffer = parser.jsonArray()
@@ -84,21 +84,21 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
   }
 
   "visitor.visit(pair)" should {
-    "return Json with pair x:42" in {
+    "return Json with pair (x, JsonNumber)" in {
       val parser = parserFromString("\"x\": 42")
 
       val jsonPair = parser.jsonPair()
       val json = new Visitor().visit(jsonPair)
       json() shouldBe ("x", JsonNumber(BigDecimal("42")))
     }
-    "return Json with pair foo:[]" in {
+    "return Json with pair (foo, JsonArray.empty)" in {
       val parser = parserFromString("\"foo\" : []")
 
       val jsonPair = parser.jsonPair()
       val json = new Visitor().visit(jsonPair)
       json() shouldBe ("foo", JsonArray.empty)
     }
-    "return Json with pair obj:{}" in {
+    "return Json with pair (obj, JsonObject.empty)" in {
       val parser = parserFromString("\"obj\" : {}")
 
       val jsonPair = parser.jsonPair()
