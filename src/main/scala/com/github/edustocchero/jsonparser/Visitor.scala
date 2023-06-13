@@ -39,7 +39,7 @@ class Visitor extends JsonBaseVisitor[Json] {
 
   override def visitJsonString(ctx: JsonParser.JsonStringContext): Json = {
     val string = ctx.STRING().getText
-    JsonString(string)
+    JsonString(removeQuotes(string))
   }
 
   override def visitJsonNumber(ctx: JsonParser.JsonNumberContext): Json = {
