@@ -53,4 +53,6 @@ class Visitor extends JsonBaseVisitor[Json] {
 
   override def visitBooleanFalse(_ctx: JsonParser.BooleanFalseContext): Json =
     JsonBoolean(false)
+
+  override def visitJsonNull(_ctx: JsonParser.JsonNullContext): Json = JsonNull()
 }

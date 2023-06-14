@@ -7,6 +7,18 @@ import org.scalatest.wordspec.AnyWordSpec
 import scala.collection.mutable.ArrayBuffer
 
 class VisitorTests extends AnyWordSpec with should.Matchers {
+  "visitor.visit(null)" should {
+    "return Json with value ()" in {
+      val content = "null"
+      val parser = parserFromString(content)
+
+      val jsonNull = parser.jsonNull()
+      val json = new Visitor().visit(jsonNull)
+
+      assert(json.isInstanceOf[JsonNull])
+      json() shouldBe ()
+    }
+  }
   "visitor.visit(string)" should {
     "return Json with value foo" in {
       val content = "\"foo\""
@@ -81,6 +93,16 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
       val json = new Visitor().visit(arrayBuffer)
       json() shouldBe ArrayBuffer[Json](JsonObject.empty)
     }
+    "return Json with value ArrayBuffer(JsonNull, JsonNull)" in {
+      val parser = parserFromString("[null, null]")
+
+      val arrayBuffer = parser.jsonArray()
+      val json = new Visitor().visit(arrayBuffer)
+      json() shouldBe ArrayBuffer[Json](
+        JsonNull(),
+        JsonNull()
+      )
+    }
   }
 
   "visitor.visit(pair)" should {
@@ -104,6 +126,13 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
       val jsonPair = parser.jsonPair()
       val json = new Visitor().visit(jsonPair)
       json() shouldBe ("obj", JsonObject.empty)
+    }
+    "return Json with pair (null, JsonNull)" in {
+      val parser = parserFromString("\"null\"    :    null")
+
+      val jsonPair = parser.jsonPair()
+      val json = new Visitor().visit(jsonPair)
+      json() shouldBe ("null", JsonNull())
     }
   }
 

@@ -7,7 +7,7 @@ value: jsonNumber
      | jsonBoolean
      | jsonObject
      | jsonArray
-     | NULL
+     | jsonNull
      ;
 
 jsonObject: '{' jsonPair (',' jsonPair)* '}'
@@ -27,6 +27,8 @@ jsonBoolean: TRUE  #booleanTrue
 jsonNumber: INT;
 
 jsonString: STRING;
+
+jsonNull: NULL;
 
 WS: [ \t\r\n]+ -> skip;
 
