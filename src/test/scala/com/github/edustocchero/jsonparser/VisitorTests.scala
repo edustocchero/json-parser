@@ -38,6 +38,34 @@ class VisitorTests extends AnyWordSpec with should.Matchers {
       val jsonNumber = new Visitor().visit(number)
       jsonNumber() shouldBe BigDecimal("0")
     }
+    "return Json with value BigDecimal(-1)" in {
+      val parser = parserFromString("-1")
+
+      val number = parser.jsonNumber()
+      val jsonNumber = new Visitor().visit(number)
+      jsonNumber() shouldBe BigDecimal("-1")
+    }
+    "return Json with value BigDecimal(3.1415)" in {
+      val parser = parserFromString("3.1415")
+
+      val number = parser.jsonNumber()
+      val jsonNumber = new Visitor().visit(number)
+      jsonNumber() shouldBe BigDecimal("3.1415")
+    }
+    "return Json with value BigDecimal(1.23e2)" in {
+      val parser = parserFromString("1.23e2")
+
+      val number = parser.jsonNumber()
+      val jsonNumber = new Visitor().visit(number)
+      jsonNumber() shouldBe BigDecimal("1.23e2")
+    }
+    "return Json with value BigDecimal(-12.3E-2)" in {
+      val parser = parserFromString("-12.3E-2")
+
+      val number = parser.jsonNumber()
+      val jsonNumber = new Visitor().visit(number)
+      jsonNumber() shouldBe BigDecimal("-12.3E-2")
+    }
   }
 
   "visitor.visit(boolean)" should {

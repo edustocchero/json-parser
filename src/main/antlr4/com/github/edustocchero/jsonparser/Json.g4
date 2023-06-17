@@ -24,7 +24,7 @@ jsonBoolean: TRUE  #booleanTrue
            | FALSE #booleanFalse
            ;
 
-jsonNumber: INT;
+jsonNumber: NUMBER;
 
 jsonString: STRING;
 
@@ -34,10 +34,11 @@ WS: [ \t\r\n]+ -> skip;
 
 STRING: '"' [a-zA-Z0-9' ']+ '"';
 
+NUMBER: FLOAT (('e'|'E') FLOAT)?;
+FLOAT: '-'? INT ('.' INT)?;
 INT: [0-9]+;
 
 TRUE: 'true';
-
 FALSE: 'false';
 
 NULL: 'null';

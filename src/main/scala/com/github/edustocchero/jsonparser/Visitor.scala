@@ -43,7 +43,7 @@ class Visitor extends JsonBaseVisitor[Json] {
   }
 
   override def visitJsonNumber(ctx: JsonParser.JsonNumberContext): Json = {
-    val text = ctx.INT().getText
+    val text = ctx.NUMBER().getText
     val number = BigDecimal(text)
     JsonNumber(number)
   }
