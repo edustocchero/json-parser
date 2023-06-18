@@ -2,6 +2,7 @@ package com.github.edustocchero.jsonparser
 
 import com.github.edustocchero.jsonparser.Strings.removeQuotes
 
+import java.lang.Boolean.parseBoolean
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
@@ -19,17 +20,17 @@ class Visitor extends JsonBaseVisitor[Json] {
   }
 
   override def visitJsonPair(ctx: JsonParser.JsonPairContext): Json = {
-    val key = ctx.jsonString().STRING().getText
-    val value = visit(ctx.value())
+    val key = ctx.key.getText
+    val value = visit(ctx.value)
 
     JsonPair((removeQuotes(key), value))
   }
 
   override def visitEmptyArray(ctx: JsonParser.EmptyArrayContext): Json =
-    JsonArray(new ArrayBuffer[Json].empty)
+    JsonArray(ArrayBuffer.empty)
 
   override def visitSomeArray(ctx: JsonParser.SomeArrayContext): Json = {
-    val values = ctx.value()
+    val values = ctx.json()
     val arrayBuffer = new ArrayBuffer[Json]()
     values.forEach(value => {
       arrayBuffer.addOne(visit(value))
@@ -48,11 +49,11 @@ class Visitor extends JsonBaseVisitor[Json] {
     JsonNumber(number)
   }
 
-  override def visitBooleanTrue(_ctx: JsonParser.BooleanTrueContext): Json =
-    JsonBoolean(true)
-
-  override def visitBooleanFalse(_ctx: JsonParser.BooleanFalseContext): Json =
-    JsonBoolean(false)
+  override def visitJsonBoolean(ctx: JsonParser.JsonBooleanContext): Json = {
+    val booleanText = ctx.getText
+    val bool = parseBoolean(booleanText)
+    JsonBoolean(bool)
+  }
 
   override def visitJsonNull(_ctx: JsonParser.JsonNullContext): Json = JsonNull()
 }

@@ -1,27 +1,25 @@
 grammar Json;
 
-json: value EOF;
-
-value: jsonNumber
-     | jsonString
-     | jsonBoolean
-     | jsonObject
-     | jsonArray
-     | jsonNull
-     ;
+json: jsonNumber
+    | jsonString
+    | jsonBoolean
+    | jsonObject
+    | jsonArray
+    | jsonNull
+    ;
 
 jsonObject: '{' jsonPair (',' jsonPair)* '}'
           | '{' '}'
           ;
 
-jsonPair: jsonString ':' value;
+jsonPair: key=jsonString ':' value=json;
 
-jsonArray: '[' ']'                    #emptyArray
-         | '[' value (',' value)* ']' #someArray
+jsonArray: '[' ']'                  #EmptyArray
+         | '[' json (',' json)* ']' #SomeArray
          ;
 
-jsonBoolean: TRUE  #booleanTrue
-           | FALSE #booleanFalse
+jsonBoolean: TRUE
+           | FALSE
            ;
 
 jsonNumber: NUMBER;
