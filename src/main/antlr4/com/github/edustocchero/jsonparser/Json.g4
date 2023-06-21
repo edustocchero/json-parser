@@ -8,15 +8,11 @@ json: jsonNumber
     | jsonNull
     ;
 
-jsonObject: '{' jsonPair (',' jsonPair)* '}'
-          | '{' '}'
-          ;
+jsonObject: '{' (jsonPair (',' jsonPair)*)? '}';
 
 jsonPair: key=jsonString ':' value=json;
 
-jsonArray: '[' ']'                  #EmptyArray
-         | '[' json (',' json)* ']' #SomeArray
-         ;
+jsonArray: '[' (json (',' json)*)? ']';
 
 jsonBoolean: TRUE
            | FALSE

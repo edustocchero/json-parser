@@ -26,15 +26,10 @@ class Visitor extends JsonBaseVisitor[Json] {
     JsonPair((removeQuotes(key), value))
   }
 
-  override def visitEmptyArray(ctx: JsonParser.EmptyArrayContext): Json =
-    JsonArray(ArrayBuffer.empty)
-
-  override def visitSomeArray(ctx: JsonParser.SomeArrayContext): Json = {
+  override def visitJsonArray(ctx: JsonParser.JsonArrayContext): Json = {
     val values = ctx.json()
-    val arrayBuffer = new ArrayBuffer[Json]()
-    values.forEach(value => {
-      arrayBuffer.addOne(visit(value))
-    })
+    val arrayBuffer = new ArrayBuffer[Json].empty
+    values.forEach(value => arrayBuffer.addOne(visit(value)))
     JsonArray(arrayBuffer)
   }
 
